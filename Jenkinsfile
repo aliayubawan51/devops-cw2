@@ -23,17 +23,17 @@ pipeline {
             }
         }
         
-        stage('Test Container') {
-            steps {
-                echo 'Testing Docker Container...'
-                sh 'docker run -d --name test-container -p 8082:8081 ${DOCKER_IMAGE}:${DOCKER_TAG}'
-                sh 'sleep 5'
-sh 'docker exec test-container node --version'
-                sh 'docker stop test-container'
-                sh 'docker rm test-container'
-            }
-        }
-        
+stage('Test Container') {
+    steps {
+        echo 'Testing Docker Container...'
+        sh 'docker rm -f test-container || true'
+        sh 'docker run -d --name test-container -p 8082:8081 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+        sh 'sleep 5'
+        sh 'docker exec test-container node --version'
+        sh 'docker stop test-container'
+        sh 'docker rm test-container'
+    }
+}        
         stage('Push to DockerHub') {
             steps {
                 echo 'Pushing to DockerHub...'
